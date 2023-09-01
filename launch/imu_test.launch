@@ -1,0 +1,22 @@
+<launch>
+
+  #### IMU mag message converter  
+ 
+  <node name="mag_convert" pkg="mag_convert" type="mag_convert.py" output="screen">     
+  </node>
+  #### IMU Driver ###########################################################
+
+  <node  name="xsens_mti_node" pkg="xsens_mti_driver" type="xsens_mti_node" output="screen">
+     <rosparam command="load" file="$(find xsens_mti_driver)/param/xsens_mti_node.yaml" />
+     <remap from="/imu/data" to="/imu/data_raw"/>
+    <remap from="/imu/mag" to="/imu/magv3" />
+  </node>
+
+  #### IMU Orientation Filter ###############################################
+
+  <node pkg="imu_filter_madgwick" type="imu_filter_node" name="ImuFilter" output="screen">
+    <param name="use_mag" value="true"/>
+    <param name="world_frame" value="enu"/>
+  </node>
+
+</launch>
